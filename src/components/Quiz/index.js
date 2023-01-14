@@ -1,0 +1,142 @@
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import {
+  Container,
+  Segment,
+  Item,
+  Divider,
+  Button,
+  Icon,
+  Message,
+  Menu,
+  Header
+} from 'semantic-ui-react';
+
+import Countdown from '../Countdown';
+
+const Quiz = ({ data, countdownTime, endQuiz }) => {
+
+  const [questionIndex, setQuestionIndex] = useState(0);
+  const [correctAnswers, setCorrectAnswers] = useState(0);
+  const [userSelectedAnswer, setuserSelectedAnswer] = useState(null);
+  const [questionsAndAnswers, setQuestionsAndAnswers] = useState([]);
+  const [timeTaken, setTimeTaken] = useState(null);
+
+  const handleItemClick = (e, { id }) => {
+    setuserSelectedAnswer(id);
+  };
+
+  const handleNext = () => {
+    let point = 0;
+    if (userSelectedAnswer === data[questionIndex].answers[0].id) {
+      point = 1;
+    }
+
+    const qna = questionsAndAnswers;
+    qna.push({
+      question: data[questionIndex].question,
+      user_answer: userSelectedAnswer,
+      correct_answer: data[questionIndex].answers[0].text,
+      point
+    });
+
+    if (questionIndex === data.length - 1) {
+      return endQuiz({
+        totalQuestions: data.length,
+        correctAnswers: correctAnswers + point,
+        timeTaken,
+        questionsAndAnswers: qna
+      });
+    }
+
+    setCorrectAnswers(correctAnswers + point);
+    setQuestionIndex(questionIndex + 1);
+    setuserSelectedAnswer(null);
+    setQuestionsAndAnswers(qna);
+  };
+
+  const timeOver = timeTaken => {
+    return endQuiz({
+      totalQuestions: data.length,
+      correctAnswers,
+      timeTaken,
+      questionsAndAnswers
+    });
+  };
+
+  return (
+    <Item.Header>
+      <Container>
+        <Segment>
+          <Item.Group divided>
+            <Item>
+              <Item.Content>
+                <Item.Extra>
+                  <Header as="h1" block floated="left">
+                    <Icon name="info circle" />
+                    <Header.Content>
+                      {`Question No.${questionIndex + 1} of ${data.length}`}
+                    </Header.Content>
+                  </Header>
+                  <Countdown
+                    countdownTime={countdownTime}
+                    timeOver={timeOver}
+                    setTimeTaken={setTimeTaken}
+                  />
+                </Item.Extra>
+                <br />
+                <Item.Meta>
+                  <Message size="huge" floating>
+                    <b>{`Q. ${data[questionIndex].question}`}</b>
+                  </Message>
+                  <br />
+                  <Item.Description>
+                    <h3>Please choose one of the following answers:</h3>
+                  </Item.Description>
+                  <Divider />
+                  <Menu vertical fluid size="massive">
+                    {data[questionIndex].options.map((option, i) => {
+
+                      return (
+                        <Menu.Item
+                          key={option.id}
+                          name={option.id}
+                          active={userSelectedAnswer === option.id}
+                          onClick={(e) => handleItemClick(e, option)}
+                        >
+                          {option.text}
+                        </Menu.Item>
+                      );
+                    })}
+                  </Menu>
+                </Item.Meta>
+                <Divider />
+                <Item.Extra>
+                  <Button
+                    primary
+                    content="Next"
+                    onClick={handleNext}
+                    floated="right"
+                    size="big"
+                    icon="right chevron"
+                    labelPosition="right"
+                    disabled={!userSelectedAnswer}
+                  />
+                </Item.Extra>
+              </Item.Content>
+            </Item>
+          </Item.Group>
+        </Segment>
+        <br />
+      </Container>
+    </Item.Header>
+  );
+};
+
+Quiz.propTypes = {
+  data: PropTypes.array.isRequired,
+  countdownTime: PropTypes.number.isRequired,
+  endQuiz: PropTypes.func.isRequired
+};
+
+export default Quiz;

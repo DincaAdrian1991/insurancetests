@@ -11710,7 +11710,7 @@ const data = [
     "options": [
       {
         "id": "a",
-        "text": "a)  *pierderea suferită ca urmare a folosirii pistelor și a terenurilor de aterizare neautorizate, cu excepția cazurilor de forță majoră"
+        "text": "a) pierderea suferită ca urmare a folosirii pistelor și a terenurilor de aterizare neautorizate, cu excepția cazurilor de forță majoră"
       },
       {
         "id": "b",
@@ -11721,7 +11721,12 @@ const data = [
         "text": "c) pierderile provocate de acțiunea neintenționată a asiguratului"
       }
     ],
-    "answers": []
+    "answers": [
+      {
+        "id": "a",
+        "text": "a) pierderea suferită ca urmare a folosirii pistelor și a terenurilor de aterizare neautorizate, cu excepția cazurilor de forță majoră"
+      },
+    ]
   },
   {
     "id": 582,
